@@ -1,97 +1,123 @@
-
 'use client';
 
-import Link from 'next/link';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { useTheme } from 'next-themes';
-import { Search, Sun, Moon, ShoppingBag, Heart } from 'lucide-react';
-import { useFavorites } from '@/hooks/useFavoritesContext';
+import { Code2, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
+const navLinks = [
+    { name: 'Home',       href: '#home'       },
+    { name: 'About',      href: '#about'      },
+    { name: 'Experience', href: '#experience' },
+    { name: 'Projects',   href: '#projects'   },
+    { name: 'Contact',    href: '#contact'    },
+];
+
 export default function Header() {
-    const searchParams = useSearchParams();
-    const router = useRouter();
-    const pathname = usePathname();
-    const { theme, setTheme } = useTheme();
-    const { favorites } = useFavorites();
-    const [mounted, setMounted] = useState(false);
-    const [isScrolled, setIsScrolled] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
 
-   
     useEffect(() => {
-        setMounted(true);
-
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 10);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        const handler = () => setScrolled(window.scrollY > 20);
+        window.addEventListener('scroll', handler);
+        return () => window.removeEventListener('scroll', handler);
     }, []);
 
-    const handleSearch = (term: string) => {
-        const params = new URLSearchParams(searchParams);
-        if (term) {
-            params.set('search', term);
-        } else {
-            params.delete('search');
-        }
-        params.delete('skip'); // Reset pagination on search
-        router.replace(`/?${params.toString()}`);
-    };
-
-    if (!mounted) return null;
-
     return (
-        <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${isScrolled ? 'border-b bg-background/80 backdrop-blur-md shadow-sm' : 'bg-transparent'}`}>
-            <div className="container px-4 md:px-6 mx-auto h-16 sm:h-20 flex items-center justify-between gap-4 sm:gap-8">
-                <Link href="/" className="flex items-center gap-2 group">
-                    <div className="bg-primary text-primary-foreground p-2 rounded-xl group-hover:scale-110 transition-transform duration-300">
-                        <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6" />
+        <header
+            style={{
+                position: 'sticky',
+                top: 0,
+                zIndex: 50,
+                width: '100%',
+                backgroundColor: scrolled ? 'rgba(255,255,255,0.95)' : '#ffffff',
+                backdropFilter: scrolled ? 'blur(12px)' : 'none',
+                borderBottom: scrolled ? '1px solid #e2e8f0' : '1px solid transparent',
+                transition: 'all 0.25s ease',
+            }}
+        >
+            <div
+                className="container mx-auto px-4 md:px-8"
+                style={{ height: '4.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+            >
+                {/* Logo */}
+                <a href="#home" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
+                    <div style={{
+                        width: '2rem', height: '2rem', borderRadius: '0.5rem',
+                        backgroundColor: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        boxShadow: '0 2px 8px rgba(79,70,229,0.25)',
+                    }}>
+                        <Code2 className="w-4 h-4" style={{ color: '#ffffff' }} />
                     </div>
-                    <span className="font-bold text-xl sm:text-2xl tracking-tight hidden sm:inline-block">LuxeStore</span>
-                </Link>
+                    <span style={{ fontWeight: 800, fontSize: '1.2rem', letterSpacing: '-0.03em', color: '#0f172a' }}>
+                        LK<span style={{ color: '#4f46e5' }}>.</span>
+                    </span>
+                </a>
 
-                <div className="flex items-center flex-1 max-w-xl mx-auto transition-all duration-300 focus-within:scale-[1.02]">
-                    <div className="relative w-full">
-                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <input
-                            type="search"
-                            placeholder="Search for premium products..."
-                            className="w-full rounded-full border border-input bg-muted/50 hover:bg-muted/80 focus:bg-background pl-10 pr-4 py-2.5 text-sm ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0 shadow-sm"
-                            defaultValue={searchParams.get('search')?.toString()}
-                            onChange={(e) => handleSearch(e.target.value)}
-                        />
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-2 sm:gap-3">
-                    <button
-                        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                        className="p-2.5 hover:bg-accent hover:text-accent-foreground rounded-full transition-colors relative overflow-hidden group"
-                        aria-label="Toggle theme"
+                {/* Desktop Nav */}
+                <nav className="hidden md:flex items-center gap-7">
+                    {navLinks.map((l) => (
+                        <a
+                            key={l.name}
+                            href={l.href}
+                            style={{ fontSize: '0.875rem', fontWeight: 600, color: '#475569', textDecoration: 'none', transition: 'color 0.15s' }}
+                            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#4f46e5'; }}
+                            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = '#475569'; }}
+                        >
+                            {l.name}
+                        </a>
+                    ))}
+                    <a
+                        href="#contact"
+                        style={{
+                            fontSize: '0.825rem', fontWeight: 700, padding: '0.5rem 1.1rem',
+                            borderRadius: '0.625rem', backgroundColor: '#4f46e5', color: '#fff',
+                            textDecoration: 'none', boxShadow: '0 2px 8px rgba(79,70,229,0.25)', transition: 'opacity 0.15s',
+                        }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.88'; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
                     >
-                        {theme === 'dark' ? (
-                            <Sun className="h-5 w-5 transition-transform group-hover:rotate-45" />
-                        ) : (
-                            <Moon className="h-5 w-5 transition-transform group-hover:-rotate-12" />
-                        )}
-                    </button>
+                        Hire Me
+                    </a>
+                </nav>
 
-                    <Link
-                        href="/favorites"
-                        className="relative p-2.5 hover:bg-accent hover:text-accent-foreground rounded-full transition-all hover:scale-105 active:scale-95 group"
-                        aria-label="View favorites"
-                    >
-                        <Heart className={`h-5 w-5 transition-colors ${favorites.length > 0 ? 'fill-red-500 text-red-500' : 'group-hover:text-red-500'}`} />
-                        {favorites.length > 0 && (
-                            <span className="absolute top-0 right-0 bg-red-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center animate-in zoom-in font-bold shadow-sm">
-                                {favorites.length}
-                            </span>
-                        )}
-                    </Link>
-                </div>
+                {/* Mobile toggle */}
+                <button
+                    className="md:hidden"
+                    onClick={() => setMobileOpen((v) => !v)}
+                    aria-label="Toggle menu"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#475569', padding: '0.25rem' }}
+                >
+                    {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                </button>
             </div>
+
+            {/* Mobile menu */}
+            {mobileOpen && (
+                <div style={{ borderTop: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
+                    <nav style={{ display: 'flex', flexDirection: 'column', padding: '0.75rem 1rem 1rem' }}>
+                        {navLinks.map((l) => (
+                            <a
+                                key={l.name}
+                                href={l.href}
+                                onClick={() => setMobileOpen(false)}
+                                style={{
+                                    padding: '0.75rem 1rem', borderRadius: '0.625rem', fontSize: '0.9rem',
+                                    fontWeight: 600, color: '#475569', textDecoration: 'none', transition: 'all 0.15s',
+                                }}
+                                onMouseEnter={(e) => {
+                                    (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#f0f4ff';
+                                    (e.currentTarget as HTMLAnchorElement).style.color = '#4f46e5';
+                                }}
+                                onMouseLeave={(e) => {
+                                    (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'transparent';
+                                    (e.currentTarget as HTMLAnchorElement).style.color = '#475569';
+                                }}
+                            >
+                                {l.name}
+                            </a>
+                        ))}
+                    </nav>
+                </div>
+            )}
         </header>
     );
 }
