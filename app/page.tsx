@@ -118,7 +118,7 @@ export default function Home() {
 
   const projects = [
     {
-      title: 'Hiltuy',
+      title: 'Hibuy',
       sub: 'Shopify App & E-commerce Website',
       desc: 'Built a complete Shopify application and website with a user-friendly frontend. Integrated third-party APIs to extend store functionality, workflows and response times.',
       stack: ['Next.js', 'React', 'Shopify APIs', 'PostgreSQL', 'Prisma', 'Tailwind CSS'],
