@@ -48,7 +48,7 @@ export default function Header() {
                         <Code2 className="w-4 h-4" style={{ color: '#ffffff' }} />
                     </div>
                     <span style={{ fontWeight: 800, fontSize: '1.2rem', letterSpacing: '-0.03em', color: '#0f172a' }}>
-                        LK<span style={{ color: '#4f46e5' }}>.</span>
+                        Laiba<span style={{ color: '#4f46e5' }}>.</span>
                     </span>
                 </a>
 
